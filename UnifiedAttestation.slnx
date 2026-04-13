@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Solution Items/">
+    <File Path="azure-pipeline.yml" />
     <File Path="README.md" />
     <File Path="Settings.props" />
   </Folder>
