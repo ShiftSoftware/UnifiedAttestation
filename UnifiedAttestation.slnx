@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+    <File Path="Settings.props" />
+  </Folder>
+  <Project Path="UnifiedAttestation.Functions/UnifiedAttestation.Functions.csproj" />
+  <Project Path="UnifiedAttestation/UnifiedAttestation.csproj" />
+</Solution>

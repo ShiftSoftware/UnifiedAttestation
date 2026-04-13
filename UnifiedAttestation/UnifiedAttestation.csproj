@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\Settings.props" />
+  <PropertyGroup>
+	  <TargetFramework>net10.0</TargetFramework>
+	  <Nullable>enable</Nullable>
+	  <LangVersion>latest</LangVersion>
+	  <RootNamespace>ShiftSoftware.UnifiedAttestation</RootNamespace>
+	  <Authors>Shift Software</Authors>
+	  <Product>UnifiedAttestation</Product>
+	  <Version>$(PackageVersion)</Version>
+	  <AssemblyName>ShiftSoftware.UnifiedAttestation</AssemblyName>
+	  <PackageId>ShiftSoftware.UnifiedAttestation</PackageId>
+	  <Authors>aza.asim,ShiftSoftware,sarmad</Authors>
+	  <Description>Core services, models, and abstractions for unified mobile application attestation. Provides a single, unified interface to verify device integrity across multiple providers, including Firebase App Check (Apple App Attest, Google Play Integrity) with Replay Protection, and Huawei Mobile Services (HMS) SysIntegrity.</Description>
+	  <PackageTags>security;attestation;firebase;appcheck;hms;huawei;userdetect;play-integrity;app-attest;mobile-security</PackageTags>
+	  <Copyright>Copyright (c) Shift Software 2026</Copyright>
+	  <PackageProjectUrl>https://github.com/ShiftSoftware/UnifiedAttestation</PackageProjectUrl>
+	  <PackageIcon>icon.png</PackageIcon>
+	  <RepositoryUrl>https://github.com/ShiftSoftware/UnifiedAttestation</RepositoryUrl>
+	  <RepositoryType>git</RepositoryType>
+	  <Title>UnifiedAttestation</Title>
+	  <PackageReleaseNotes>
+
+	  </PackageReleaseNotes>
+	  <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="icon.png" />
+	<None Include="Images\icon.png" Pack="true" PackagePath="\" />
+	<Folder Include="Images\" />	  
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Azure.Security.KeyVault.Certificates" Version="4.8.0" />
+		<PackageReference Include="Google.Apis.Auth.AspNetCore3" Version="1.73.0" />
+		<PackageReference Include="Google.Apis.Firebaseappcheck.v1beta" Version="1.73.0.4055" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.17.0" />
+	</ItemGroup>
+</Project>

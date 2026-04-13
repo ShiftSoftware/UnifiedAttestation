@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net10.0</TargetFramework>
+	  <Nullable>enable</Nullable>
+	  <LangVersion>latest</LangVersion>
+	  <RootNamespace>ShiftSoftware.UnifiedAttestation.Functions</RootNamespace>
+	  <Authors>Shift Software</Authors>
+	  <Product>UnifiedAttestation</Product>
+	  <Version>$(PackageVersion)</Version>
+	  <AssemblyName>ShiftSoftware.UnifiedAttestation.Functions</AssemblyName>
+	  <PackageId>ShiftSoftware.UnifiedAttestation.Functions</PackageId>
+	  <Authors>ShiftSoftware,aza.asim,,sarmad</Authors>
+	  <Description>Azure Functions Isolated Worker integration for ShiftSoftware.UnifiedAttestation. Provides seamless dependency injection extensions and a custom middleware pipeline with declarative attributes ([ValidateAttestation]) to easily secure serverless endpoints against unauthorized or tampered mobile clients.</Description>
+	  <PackageTags>azure;azure-functions;isolated-worker;middleware;serverless;security-middleware;dependency-injection;attestation</PackageTags>
+	  <Copyright>Copyright (c) Shift Software 2026</Copyright>
+	  <PackageProjectUrl>https://github.com/ShiftSoftware/UnifiedAttestation</PackageProjectUrl>
+	  <PackageIcon>icon.png</PackageIcon>
+	  <RepositoryUrl>https://github.com/ShiftSoftware/UnifiedAttestation</RepositoryUrl>
+	  <RepositoryType>git</RepositoryType>
+	  <Title>UnifiedAttestation</Title>
+	  <PackageReleaseNotes>
+
+	  </PackageReleaseNotes>
+	  <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="icon.png" />
+		<None Include="Images\icon.png" Pack="true" PackagePath="\" />
+		<Folder Include="Images\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.3.0" />
+		<PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" Version="2.1.0" />
+		<PackageReference Include="Microsoft.Extensions.Azure" Version="1.13.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\UnifiedAttestation\UnifiedAttestation.csproj" />
+	</ItemGroup>
+</Project>
