@@ -2,11 +2,11 @@
 A robust, unified security layer for Azure Functions (Isolated Worker Model) designed to verify the integrity of mobile client requests across iOS, Android, and Huawei devices. It ensures incoming requests originate from legitimate, untampered versions of your mobile applications running on genuine devices.
 
 ## Features
-- **Multi-Platform Support**: Supports Apple App Attest, Google Play Integrity (via Firebase App Check), and Huawei Mobile Services (HMS) SysIntegrity.
+- **Multi-Platform Support**: Supports Apple App Attest, Google Play Integrity (via Firebase App Check), and Huawei Mobile Services (HMS) UserDetect.
 - **Replay Protection**: Optional strict, network-based one-time-use verification to prevent replay attacks.
 - **Azure Functions Middleware**: Clean, declarative security using the [ValidateAttestation] attribute.
 - **Secure Credential Management**: Built-in integration with Azure Key Vault for certificate management.
-- **Development Bypass**: Seamless local development experience using the AttestationBypassService when AZURE_FUNCTIONS_ENVIRONMENT is set to Development.
+- **Development Bypass**: Seamless local development experience using the FakeAttestationService when useFakeService parameter of AddAttestationVerification is set to true.
 - **High Performance**: Intelligent caching of server-to-server OAuth tokens to respect API rate limits and minimize latency.
 
 ## Packages
