@@ -11,7 +11,7 @@ namespace ShiftSoftware.UnifiedAttestation.Models
         /// <summary>
         /// Huawei Mobile Services User Detect configuration options. This is required to enable HMS User Detect token verification.
         /// </summary>
-        public HMSUserDetectOptions? HMS { get; set; }
+        public HMSUserDetectOptions HMS { get; set; } = new();
 
         /// <summary>
         /// The HTTP header key used to pass the attestation token. Defaults to "Verification-Token".

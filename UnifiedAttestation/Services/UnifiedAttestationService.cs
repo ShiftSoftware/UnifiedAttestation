@@ -11,15 +11,14 @@ namespace ShiftSoftware.UnifiedAttestation.Services
 {
     public class UnifiedAttestationService : IUnifiedAttestationService
     {
-        private readonly FirebaseAppCheckService firebaseAppCheckService;
-        private readonly HMSUserDetectService hmsUserDetectService;
         private readonly AttestationOptions options;
-
-        public UnifiedAttestationService(FirebaseAppCheckService firebaseAppCheckService, HMSUserDetectService hmsUserDetectService, AttestationOptions options)
+        private readonly FirebaseAppCheckService? firebaseAppCheckService;
+        private readonly HMSUserDetectService? hmsUserDetectService;
+        public UnifiedAttestationService(AttestationOptions options, FirebaseAppCheckService? firebaseAppCheckService = null, HMSUserDetectService? hmsUserDetectService = null)
         {
+            this.options = options;
             this.firebaseAppCheckService = firebaseAppCheckService;
             this.hmsUserDetectService = hmsUserDetectService;
-            this.options = options;
         }
 
         /// <summary>
@@ -34,17 +33,17 @@ namespace ShiftSoftware.UnifiedAttestation.Services
         /// <returns>True if the token is valid, trusted, otherwise, false.</returns>
         public async ValueTask<bool> VerifyTokenAsync(string token, AttestationPlatform platform, bool? withReplayProtection = false)
         {
-            if (platform is (AttestationPlatform.Android or AttestationPlatform.iOS) && options.Firebase.Enabled)
+            if (platform is (AttestationPlatform.Android or AttestationPlatform.iOS) && options.Firebase.Enabled && firebaseAppCheckService != null)
             {
                 if (withReplayProtection is true)
                     return await firebaseAppCheckService.VerifyTokenWithReplayProtectionAsync(token);
 
                 return await firebaseAppCheckService.VerifyTokenAsync(token);
             }
-            else if (platform is AttestationPlatform.Huawei && options.HMS != null && options.HMS.Enabled) { 
+            else if (platform is AttestationPlatform.Huawei && options.HMS.Enabled && hmsUserDetectService != null) { 
                 return await hmsUserDetectService.VerifyTokenAsync(token);
             }
-            return false;
+            return true;
         }
     }
 }
