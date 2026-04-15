@@ -21,88 +21,83 @@ namespace ShiftSoftware.UnifiedAttestation.Functions.Extensions
         /// into the Azure Functions worker pipeline.
         /// </summary>
         /// <param name="builder">The functions worker application builder.</param>
-        /// <param name="firebaseProjectNumber">The Google Cloud project number associated with Firebase.</param>
-        /// <param name="serviceAccountKeyVaultCertificate">The name of the certificate stored in Azure Key Vault for the Google Service Account.</param>
-        /// <param name="serviceAccountEmail">The email address of the Google Service Account.</param>
-        /// <param name="keyVaultUri">The absolute URI of the Azure Key Vault containing the certificate.</param>
-        /// <param name="hmsAppId">The Huawei Mobile Services (HMS) Application ID.</param>
-        /// <param name="hmsClientId">The Huawei Mobile Services (HMS) Client ID.</param>
-        /// <param name="hmsClientSecret">The Huawei Mobile Services (HMS) Client Secret.</param>
-        /// <param name="headerKey">The HTTP header key used to pass the attestation token. Defaults to "Verification-Token".</param>
-        /// <param name="useFakeService">Indicates whether to use a fake attestation service for testing purposes. Defaults to false.</param>
+        /// <param name="configureOptions">The delegate used to configure attestation options.</param>
         /// <returns>The builder instance to allow method chaining.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the builder is null.</exception>
-        /// <exception cref="ArgumentException">Thrown when any of the required string parameters are null or whitespace, or if the Key Vault URI is invalid.</exception>
+        /// <exception cref="ArgumentException">Thrown when required configured values are null or whitespace, or if the Key Vault URI is invalid.</exception>
         public static IFunctionsWorkerApplicationBuilder AddAttestationVerification(
             this IFunctionsWorkerApplicationBuilder builder,
-            string firebaseProjectNumber,
-            string serviceAccountKeyVaultCertificate,
-            string serviceAccountEmail,
-            string keyVaultUri,
-            string hmsAppId,
-            string hmsClientId,
-            string hmsClientSecret,
-            string headerKey = "Verification-Token",
-            bool useFakeService = false)
+            Action<AttestationOptions> configureOptions)
         {
-            if (useFakeService)
+            // 1. Fail-Fast Parameter Validation
+            ArgumentNullException.ThrowIfNull(builder);
+            ArgumentNullException.ThrowIfNull(configureOptions);
+
+            // 2. Create a temporary instance to wire up internal services that need the data at startup
+            var rootOptions = new AttestationOptions();
+            configureOptions(rootOptions);
+
+            if (rootOptions.UseFakeServices)
             {
                 builder.Services.AddSingleton<IUnifiedAttestationService, FakeAttestationService>();
             }
             else
             {
-                // 1. Fail-Fast Parameter Validation
-                ArgumentNullException.ThrowIfNull(builder);
-
-                ArgumentException.ThrowIfNullOrWhiteSpace(firebaseProjectNumber, nameof(firebaseProjectNumber));
-                ArgumentException.ThrowIfNullOrWhiteSpace(serviceAccountKeyVaultCertificate, nameof(serviceAccountKeyVaultCertificate));
-                ArgumentException.ThrowIfNullOrWhiteSpace(serviceAccountEmail, nameof(serviceAccountEmail));
-                ArgumentException.ThrowIfNullOrWhiteSpace(hmsAppId, nameof(hmsAppId));
-                ArgumentException.ThrowIfNullOrWhiteSpace(hmsClientId, nameof(hmsClientId));
-                ArgumentException.ThrowIfNullOrWhiteSpace(hmsClientSecret, nameof(hmsClientSecret));
-                ArgumentException.ThrowIfNullOrWhiteSpace(headerKey, nameof(headerKey));
-
-
-                if (!Uri.TryCreate(keyVaultUri, UriKind.Absolute, out Uri parsedKeyVaultUri))
+                if (rootOptions.Firebase.Enabled)
                 {
-                    throw new ArgumentException($"The provided Key Vault URI '{keyVaultUri}' is not a valid absolute URI.", nameof(keyVaultUri));
+                    ArgumentException.ThrowIfNullOrWhiteSpace(rootOptions.Firebase.ProjectNumber, nameof(rootOptions.Firebase.ProjectNumber));
+                    ArgumentException.ThrowIfNullOrWhiteSpace(rootOptions.Firebase.ServiceAccountKeyVaultCertificate, nameof(rootOptions.Firebase.ServiceAccountKeyVaultCertificate));
+                    ArgumentException.ThrowIfNullOrWhiteSpace(rootOptions.Firebase.ServiceAccountEmail, nameof(rootOptions.Firebase.ServiceAccountEmail));
+                    ArgumentException.ThrowIfNullOrWhiteSpace(rootOptions.Firebase.KeyVaultURI, nameof(rootOptions.Firebase.KeyVaultURI));
+
+                    if (!Uri.TryCreate(rootOptions.Firebase.KeyVaultURI, UriKind.Absolute, out Uri parsedKeyVaultUri))
+                    {
+                        throw new ArgumentException($"The provided Key Vault URI '{rootOptions.Firebase.KeyVaultURI}' is not a valid absolute URI.", nameof(rootOptions.Firebase.KeyVaultURI));
+                    }
+
+                    // 3. Register Firebase Services
+                    builder.Services.AddSingleton<FirebaseAppCheckService>();
+                    builder.Services.Configure<FirebaseAppCheckOptions>(options =>
+                    {
+                        options.ProjectNumber = rootOptions.Firebase.ProjectNumber;
+                        options.ServiceAccountEmail = rootOptions.Firebase.ServiceAccountEmail;
+                        options.ServiceAccountKeyVaultCertificate = rootOptions.Firebase.ServiceAccountKeyVaultCertificate;
+                        options.KeyVaultURI = rootOptions.Firebase.KeyVaultURI;
+                    });
+
+                    // 4. Register Azure Key Vault Client safely using the validated URI
+                    builder.Services.AddAzureClients(clientBuilder =>
+                    {
+                        clientBuilder.AddCertificateClient(parsedKeyVaultUri)
+                                     .WithCredential(new DefaultAzureCredential());
+                    });
                 }
 
-                // 2. Register Firebase Services
-                builder.Services.AddSingleton<FirebaseAppCheckService>();
-                builder.Services.Configure<FirebaseAppCheckOptions>(options =>
+                if (rootOptions.HMS != null && rootOptions.HMS.Enabled)
                 {
-                    options.FirebaseProjectNumber = firebaseProjectNumber;
-                    options.ServiceAccountEmail = serviceAccountEmail;
-                    options.ServiceAccountKeyVaultCertificate = serviceAccountKeyVaultCertificate;
-                });
+                    ArgumentException.ThrowIfNullOrWhiteSpace(rootOptions.HMS.AppId, nameof(rootOptions.HMS.AppId));
+                    ArgumentException.ThrowIfNullOrWhiteSpace(rootOptions.HMS.ClientId, nameof(rootOptions.HMS.ClientId));
+                    ArgumentException.ThrowIfNullOrWhiteSpace(rootOptions.HMS.ClientSecret, nameof(rootOptions.HMS.ClientSecret));
 
-                // 3. Register Azure Key Vault Client safely using the validated URI
-                builder.Services.AddAzureClients(clientBuilder =>
-                {
-                    clientBuilder.AddCertificateClient(parsedKeyVaultUri)
-                                 .WithCredential(new DefaultAzureCredential());
-                });
+                    // 5. Register HMS Services
+                    builder.Services.AddSingleton<HMSUserDetectService>();
+                    builder.Services.Configure<HMSUserDetectOptions>(options =>
+                    {
+                        options.AppId = rootOptions.HMS.AppId;
+                        options.ClientId = rootOptions.HMS.ClientId;
+                        options.ClientSecret = rootOptions.HMS.ClientSecret;
+                    });
+                }
 
-                // 4. Register HMS Services
-                builder.Services.AddSingleton<HMSUserDetectService>();
-                builder.Services.Configure<HMSUserDetectOptions>(options =>
-                {
-                    options.HMSAppId = hmsAppId;
-                    options.HMSClientId = hmsClientId;
-                    options.HMSClientSecret = hmsClientSecret;
-                });
+                ArgumentException.ThrowIfNullOrWhiteSpace(rootOptions.HeaderKey, nameof(rootOptions.HeaderKey));
 
-                // 5. Register the Unified Service
+                // 6. Register the Unified Service
                 builder.Services.AddSingleton<IUnifiedAttestationService, UnifiedAttestationService>();
             }
             // Used by both real and fake service for middleware configuration
-            builder.Services.AddSingleton(options => new AttestationOptions()
-            {
-                HeaderKey = headerKey
-            });
+            builder.Services.AddSingleton(rootOptions);
 
-            // 6. Register conditional Middleware with robust null checks
+            // 7. Register conditional Middleware with robust null checks
             builder.UseWhen<AttestationMiddleware>(context =>
             {
                 var targetMethod = context.GetTargetFunctionMethod();

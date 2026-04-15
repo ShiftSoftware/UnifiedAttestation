@@ -72,7 +72,7 @@ namespace ShiftSoftware.UnifiedAttestation.Services
             try
             {
                 var response = await httpClient.PostAsJsonAsync(
-                    $"https://hirms.cloud.huawei.com/rms/v1/userRisks/verify?appId={options.HMSAppId}",
+                    $"https://hirms.cloud.huawei.com/rms/v1/userRisks/verify?appId={options.AppId}",
                     new HMSUserDetectRequestBody
                     {
                         AccessToken = accessToken,
@@ -118,8 +118,8 @@ namespace ShiftSoftware.UnifiedAttestation.Services
             var authPayload = new List<KeyValuePair<string, string>>()
             {
                 KeyValuePair.Create("grant_type", "client_credentials"),
-                KeyValuePair.Create("client_id", options.HMSClientId),
-                KeyValuePair.Create("client_secret", options.HMSClientSecret),
+                KeyValuePair.Create("client_id", options.ClientId),
+                KeyValuePair.Create("client_secret", options.ClientSecret),
             };
             var encodedPaylod = new FormUrlEncodedContent(authPayload);
             encodedPaylod.Headers.ContentType = new("application/x-www-form-urlencoded");

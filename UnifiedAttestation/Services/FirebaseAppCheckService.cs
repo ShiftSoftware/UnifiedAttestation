@@ -41,7 +41,7 @@ namespace ShiftSoftware.UnifiedAttestation.Services
             this.memoryCache = memoryCache;
 
             ArgumentNullException.ThrowIfNull(appCheckOptions);
-            ArgumentException.ThrowIfNullOrWhiteSpace(appCheckOptions.FirebaseProjectNumber, nameof(appCheckOptions.FirebaseProjectNumber));
+            ArgumentException.ThrowIfNullOrWhiteSpace(appCheckOptions.ProjectNumber, nameof(appCheckOptions.ProjectNumber));
             ArgumentException.ThrowIfNullOrWhiteSpace(appCheckOptions.ServiceAccountEmail, nameof(appCheckOptions.ServiceAccountEmail));
             ArgumentException.ThrowIfNullOrWhiteSpace(appCheckOptions.ServiceAccountKeyVaultCertificate, nameof(appCheckOptions.ServiceAccountKeyVaultCertificate));
 
@@ -61,7 +61,7 @@ namespace ShiftSoftware.UnifiedAttestation.Services
                 HttpClientInitializer = credential,
             });
 
-            firebaseProject = $"projects/{appCheckOptions.FirebaseProjectNumber}";
+            firebaseProject = $"projects/{appCheckOptions.ProjectNumber}";
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace ShiftSoftware.UnifiedAttestation.Services
 
                 // 3. Verify the Issuer (must match your project number)
                 ValidateIssuer = true,
-                ValidIssuer = $"https://firebaseappcheck.googleapis.com/{appCheckOptions.FirebaseProjectNumber}",
+                ValidIssuer = $"https://firebaseappcheck.googleapis.com/{appCheckOptions.ProjectNumber}",
 
                 // 4. Verify the Audience (must match your project number)
                 ValidateAudience = true,
