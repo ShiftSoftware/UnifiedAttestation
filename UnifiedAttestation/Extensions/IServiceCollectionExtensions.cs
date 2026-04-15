@@ -89,9 +89,6 @@ namespace ShiftSoftware.UnifiedAttestation.Extensions
                 services.AddSingleton<IUnifiedAttestationService, UnifiedAttestationService>();
             }
 
-            rootOptions.HMS = null;
-            rootOptions.Firebase = null;
-
             // Used by both real and fake service for middleware configuration
             services.AddSingleton(rootOptions);
 
