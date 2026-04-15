@@ -83,7 +83,7 @@ namespace ShiftSoftware.UnifiedAttestation.Extensions
                         options.ClientSecret = rootOptions.HMS.ClientSecret;
                     });
                 }
-                ArgumentException.ThrowIfNullOrWhiteSpace(rootOptions.HeaderKey, nameof(rootOptions.HeaderKey));
+                ArgumentException.ThrowIfNullOrWhiteSpace(rootOptions.PlatformHeaderKey, nameof(rootOptions.PlatformHeaderKey));
 
                 // 5. Register the Unified Service
                 services.AddSingleton<IUnifiedAttestationService, UnifiedAttestationService>();

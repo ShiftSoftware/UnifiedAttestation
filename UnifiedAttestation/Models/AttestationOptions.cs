@@ -16,7 +16,11 @@ namespace ShiftSoftware.UnifiedAttestation.Models
         /// <summary>
         /// The HTTP header key used to pass the attestation token. Defaults to "Verification-Token".
         /// </summary>
-        public string HeaderKey { get; set; } = "Verification-Token";
+        public string TokenHeaderKey { get; set; } = "Verification-Token";
+        /// <summary>
+        /// The HTTP header key used to pass the attestation platform. Defaults to "Platform".
+        /// </summary>
+        public string PlatformHeaderKey { get; set; } = "Platform";
 
         /// <summary>
         /// Indicates whether to use a fake attestation service for testing purposes. Defaults to false.

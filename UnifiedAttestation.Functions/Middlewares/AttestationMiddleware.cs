@@ -39,10 +39,10 @@ namespace ShiftSoftware.UnifiedAttestation.Functions.Middlewares
                 var attestationOptions = serviceProvider.GetRequiredService<AttestationOptions>();
 
                 var verificationToken = httpContext.Request.Headers
-                    .LastOrDefault(x => x.Key.ToLower().Equals(attestationOptions.HeaderKey, StringComparison.InvariantCultureIgnoreCase))
+                    .LastOrDefault(x => x.Key.ToLower().Equals(attestationOptions.TokenHeaderKey, StringComparison.InvariantCultureIgnoreCase))
                     .Value.LastOrDefault();
 
-                var platformHeader = httpContext.Request.Headers.LastOrDefault(x => x.Key.ToLower().Equals("Platform", StringComparison.InvariantCultureIgnoreCase)).Value.LastOrDefault();
+                var platformHeader = httpContext.Request.Headers.LastOrDefault(x => x.Key.ToLower().Equals(attestationOptions.PlatformHeaderKey, StringComparison.InvariantCultureIgnoreCase)).Value.LastOrDefault();
 
                 if (string.IsNullOrWhiteSpace(verificationToken) || string.IsNullOrWhiteSpace(platformHeader))
                 {

@@ -89,7 +89,8 @@ namespace ShiftSoftware.UnifiedAttestation.Functions.Extensions
                     });
                 }
 
-                ArgumentException.ThrowIfNullOrWhiteSpace(rootOptions.HeaderKey, nameof(rootOptions.HeaderKey));
+                ArgumentException.ThrowIfNullOrWhiteSpace(rootOptions.TokenHeaderKey, nameof(rootOptions.TokenHeaderKey));
+                ArgumentException.ThrowIfNullOrWhiteSpace(rootOptions.PlatformHeaderKey, nameof(rootOptions.PlatformHeaderKey));
 
                 // 6. Register the Unified Service
                 builder.Services.AddSingleton<IUnifiedAttestationService, UnifiedAttestationService>();
