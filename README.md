@@ -94,3 +94,11 @@ For high-value endpoints (like payments or login), you can enable Replay Protect
 When running locally using Azure Functions Core Tools, the `useFakeService` parameter of the AddAttestationVerification function can be used to bypass token validation in `Development` environment.
 
 The registration logic will automatically swap out the real validation service for the `FakeAttestationService`. This allows front-end developers to test endpoints by simply passing any string (e.g., `Verification-Token: dev-test`) without needing to configure physical devices or real App Check projects.
+
+## Azure Hosting Note (Certificate Loading)
+
+If your Azure App Service app or Azure Functions App (on App Service-based hosting, such as Dedicated/App Service plan) encounters certificate private key import errors (`CryptographicException`) when loading the Firebase service account certificate from Key Vault, set this Environment variable in **app settings**:
+
+- `WEBSITE_LOAD_USER_PROFILE=1`
+
+This enables loading a full user profile and resolves certificate private key loading in that hosting mode.
