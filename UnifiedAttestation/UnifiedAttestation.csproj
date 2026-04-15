@@ -12,7 +12,7 @@
 	  <AssemblyName>ShiftSoftware.UnifiedAttestation</AssemblyName>
 	  <PackageId>ShiftSoftware.UnifiedAttestation</PackageId>
 	  <Authors>aza.asim,ShiftSoftware,sarmad</Authors>
-	  <Description>Core services, models, and abstractions for unified mobile application attestation. Provides a single, unified interface to verify device integrity across multiple providers, including Firebase App Check (Apple App Attest, Google Play Integrity) with Replay Protection, and Huawei Mobile Services (HMS) SysIntegrity.</Description>
+	  <Description>Core services, models, and abstractions for unified mobile application attestation. Provides a single, unified interface to verify device integrity across multiple providers, including Firebase App Check (Apple App Attest, Google Play Integrity) with Replay Protection, and Huawei Mobile Services (HMS) UserDetect.</Description>
 	  <PackageTags>security;attestation;firebase;appcheck;hms;huawei;userdetect;play-integrity;app-attest;mobile-security</PackageTags>
 	  <Copyright>Copyright (c) Shift Software 2026</Copyright>
 	  <PackageProjectUrl>https://github.com/ShiftSoftware/UnifiedAttestation</PackageProjectUrl>
