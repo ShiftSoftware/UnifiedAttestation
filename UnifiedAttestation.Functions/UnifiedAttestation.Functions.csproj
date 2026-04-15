@@ -2,7 +2,7 @@
 
 	<Import Project="..\Settings.props" />
   <PropertyGroup>
-	  <TargetFramework>net10.0</TargetFramework>
+	  <TargetFramework>net8.0</TargetFramework>
 	  <Nullable>enable</Nullable>
 	  <LangVersion>latest</LangVersion>
 	  <RootNamespace>ShiftSoftware.UnifiedAttestation.Functions</RootNamespace>
