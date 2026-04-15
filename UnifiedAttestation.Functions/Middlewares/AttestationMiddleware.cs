@@ -54,7 +54,7 @@ namespace ShiftSoftware.UnifiedAttestation.Functions.Middlewares
                 }
                 AttestationPlatform platform;
 
-                Enum.TryParse(platformHeader, out platform);
+                Enum.TryParse(platformHeader,ignoreCase: true, out platform);
 
                 var validToken = await attestationService.VerifyTokenAsync(verificationToken, platform, withReplayProtection);
 
