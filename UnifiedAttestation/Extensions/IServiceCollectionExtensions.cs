@@ -32,9 +32,6 @@ namespace ShiftSoftware.UnifiedAttestation.Extensions
             var rootOptions = new AttestationOptions();
             configureOptions(rootOptions);
 
-            // Used by both real and fake service for middleware configuration
-            services.AddSingleton(rootOptions);
-
             if (rootOptions.UseFakeServices)
             {
                 services.AddSingleton<IUnifiedAttestationService, FakeAttestationService>();
@@ -91,6 +88,13 @@ namespace ShiftSoftware.UnifiedAttestation.Extensions
                 // 5. Register the Unified Service
                 services.AddSingleton<IUnifiedAttestationService, UnifiedAttestationService>();
             }
+
+            rootOptions.HMS = null;
+            rootOptions.Firebase = null;
+
+            // Used by both real and fake service for middleware configuration
+            services.AddSingleton(rootOptions);
+
             return services;
         }
     }

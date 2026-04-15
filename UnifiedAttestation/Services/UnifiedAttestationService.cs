@@ -15,11 +15,11 @@ namespace ShiftSoftware.UnifiedAttestation.Services
         private readonly HMSUserDetectService hmsUserDetectService;
         private readonly AttestationOptions options;
 
-        public UnifiedAttestationService(FirebaseAppCheckService firebaseAppCheckService, HMSUserDetectService hmsUserDetectService, IOptions<AttestationOptions> options)
+        public UnifiedAttestationService(FirebaseAppCheckService firebaseAppCheckService, HMSUserDetectService hmsUserDetectService, AttestationOptions options)
         {
             this.firebaseAppCheckService = firebaseAppCheckService;
             this.hmsUserDetectService = hmsUserDetectService;
-            this.options = options.Value;
+            this.options = options;
         }
 
         /// <summary>
