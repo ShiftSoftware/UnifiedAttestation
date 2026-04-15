@@ -12,7 +12,7 @@
         /// Read the Huawei Open Platform OAuth documentation to know how to obtain the client id:
         /// <see href="https://developer.huawei.com/consumer/en/doc/HMSCore-Guides/open-platform-oauth-0000001053629189#section12493191334711"/>.
         /// </remarks>
-        public required string ClientId { get; set; } = default!;
+        public string ClientId { get; set; } = default!;
 
         /// <summary>
         /// Gets or sets the HMS client secret associated with the configured client identifier.
@@ -21,7 +21,7 @@
         /// Read the Huawei Open Platform OAuth documentation to know how to obtain the client secret:
         /// <see href="https://developer.huawei.com/consumer/en/doc/HMSCore-Guides/open-platform-oauth-0000001053629189#section12493191334711"/>.
         /// </remarks>
-        public required string ClientSecret { get; set; } = default!;
+        public string ClientSecret { get; set; } = default!;
 
         /// <summary>
         /// Gets or sets the App ID applied in AppGallery Connect.
@@ -29,7 +29,7 @@
         /// <remarks>
         /// Obtain this value from AppGallery Connect
         /// </remarks>
-        public required string AppId { get; set; } = default!;
+        public string AppId { get; set; } = default!;
 
         /// <summary>
         /// Gets or sets a value indicating whether the HMS User Detect integration is enabled.
