@@ -21,7 +21,10 @@
 	  <RepositoryType>git</RepositoryType>
 	  <Title>UnifiedAttestation</Title>
 	  <PackageReleaseNotes>
-
+2.0.0
+- Supports the new HMS SafetyDetect SysIntegrity verification in ShiftSoftware.UnifiedAttestation.
+- The middleware now forwards the nonce header (AttestationOptions.NonceHeaderKey, defaults to "Verification-Nonce") to the verification service. A missing nonce is not rejected by the middleware; the SysIntegrity service decides, which surfaces as 403 rather than 401.
+- BREAKING: see the ShiftSoftware.UnifiedAttestation 2.0.0 release notes for the AttestationOptions changes.
 	  </PackageReleaseNotes>
 	  <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>

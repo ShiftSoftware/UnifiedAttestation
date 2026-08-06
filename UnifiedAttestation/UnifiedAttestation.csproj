@@ -12,8 +12,8 @@
 	  <AssemblyName>ShiftSoftware.UnifiedAttestation</AssemblyName>
 	  <PackageId>ShiftSoftware.UnifiedAttestation</PackageId>
 	  <Authors>aza.asim,ShiftSoftware,sarmad</Authors>
-	  <Description>Core services, models, and abstractions for unified mobile application attestation. Provides a single, unified interface to verify device integrity across multiple providers, including Firebase App Check (Apple App Attest, Google Play Integrity) with Replay Protection, and Huawei Mobile Services (HMS) UserDetect.</Description>
-	  <PackageTags>security;attestation;firebase;appcheck;hms;huawei;userdetect;play-integrity;app-attest;mobile-security</PackageTags>
+	  <Description>Core services, models, and abstractions for unified mobile application attestation. Provides a single, unified interface to verify device integrity across multiple providers, including Firebase App Check (Apple App Attest, Google Play Integrity) with Replay Protection, and Huawei Mobile Services (HMS) SafetyDetect via either UserDetect or SysIntegrity.</Description>
+	  <PackageTags>security;attestation;firebase;appcheck;hms;huawei;userdetect;sysintegrity;safetydetect;play-integrity;app-attest;mobile-security</PackageTags>
 	  <Copyright>Copyright (c) Shift Software 2026</Copyright>
 	  <PackageProjectUrl>https://github.com/ShiftSoftware/UnifiedAttestation</PackageProjectUrl>
 	  <PackageIcon>icon.png</PackageIcon>
@@ -21,7 +21,15 @@
 	  <RepositoryType>git</RepositoryType>
 	  <Title>UnifiedAttestation</Title>
 	  <PackageReleaseNotes>
-
+2.0.0
+- Added HMS SafetyDetect SysIntegrity support. Enable it with AttestationOptions.HMS.SysIntegrity.Enabled = true. It is verified entirely on the server (certificate chain, host name, signature) with no call to Huawei.
+- UserDetect and SysIntegrity can be enabled at the same time. The API for a Huawei request is selected by the caller: the HMS-Api header ("UserDetect" or "SysIntegrity") at the middleware level, or the hmsApi argument on VerifyTokenAsync. When none is selected it defaults to UserDetect, unless SysIntegrity is the only enabled API. Existing UserDetect clients need no header and keep working unchanged, so adding SysIntegrity is backward compatible.
+- BREAKING: AttestationOptions.HMS is now HMSOptions. The UserDetect credentials moved from HMS.AppId / HMS.ClientId / HMS.ClientSecret to HMS.UserDetect.AppId / HMS.UserDetect.ClientId / HMS.UserDetect.ClientSecret.
+- BREAKING: IUnifiedAttestationService.VerifyTokenAsync takes additional optional nonce and hmsApi parameters, used only by the Huawei path.
+- The HUAWEI CBG Root CA is supplied through HMS.SysIntegrity.RootCertificatePem, which pairs with an App Service / Functions Key Vault reference app setting so the platform resolves it before startup with no vault call at runtime. It accepts PEM text or Base64 encoded DER. If stored in Key Vault it must be a secret, not a certificate, because Key Vault certificates must carry a private key.
+- Azure.Identity is now an explicit dependency. It was previously picked up transitively, which let a consuming app resolve a lower version and fail to load it at startup.
+- Added AttestationOptions.HMSApiHeaderKey (defaults to "HMS-Api") for selecting the Huawei API, and AttestationOptions.NonceHeaderKey (defaults to "Verification-Nonce").
+- SysIntegrity nonce checking is off by default (HMS.SysIntegrity.RequireNonce = false). Freshness comes from the Huawei-signed timestampMs bounded by MaxTokenAge. The INonceValidator abstraction lets you plug in a server-issued nonce; its default echo implementation only compares the client-supplied nonce with the payload nonce and adds no replay protection on its own.
 	  </PackageReleaseNotes>
 	  <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>
@@ -36,6 +44,11 @@
     </Content>
   </ItemGroup>
 	<ItemGroup>
+		<!-- The Functions package reuses the shared registration logic in Extensions\AttestationRegistration.cs -->
+		<InternalsVisibleTo Include="ShiftSoftware.UnifiedAttestation.Functions" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Azure.Identity" Version="1.17.1" />
 		<PackageReference Include="Azure.Security.KeyVault.Certificates" Version="4.8.0" />
 		<PackageReference Include="Microsoft.Extensions.Azure" Version="1.13.1" />
 		<PackageReference Include="Google.Apis.Auth.AspNetCore3" Version="1.73.0" />

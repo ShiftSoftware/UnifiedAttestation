@@ -44,6 +44,23 @@ namespace ShiftSoftware.UnifiedAttestation.Functions.Middlewares
 
                 var platformHeader = httpContext.Request.Headers.LastOrDefault(x => x.Key.ToLower().Equals(attestationOptions.PlatformHeaderKey, StringComparison.InvariantCultureIgnoreCase)).Value.LastOrDefault();
 
+                // Selects the HMS API for a Huawei request. Optional: a missing or unrecognised value leaves this null,
+                // and the verification service defaults it (to UserDetect unless SysIntegrity is the only enabled API).
+                var hmsApiHeader = httpContext.Request.Headers
+                    .LastOrDefault(x => x.Key.ToLower().Equals(attestationOptions.HMSApiHeaderKey, StringComparison.InvariantCultureIgnoreCase))
+                    .Value.LastOrDefault();
+
+                HMSAttestationApi? hmsApi = Enum.TryParse<HMSAttestationApi>(hmsApiHeader, ignoreCase: true, out var parsedHmsApi)
+                    && Enum.IsDefined(parsedHmsApi)
+                    ? parsedHmsApi
+                    : null;
+
+                // Only the HMS SysIntegrity path uses this, so a missing nonce is not rejected here. That service
+                // decides whether the nonce was required, which surfaces as a 403 rather than a 401.
+                var nonceHeader = httpContext.Request.Headers
+                    .LastOrDefault(x => x.Key.ToLower().Equals(attestationOptions.NonceHeaderKey, StringComparison.InvariantCultureIgnoreCase))
+                    .Value.LastOrDefault();
+
                 if (string.IsNullOrWhiteSpace(verificationToken) || string.IsNullOrWhiteSpace(platformHeader))
                 {
                     await new UnauthorizedResult().ExecuteResultAsync(new ActionContext
@@ -56,7 +73,7 @@ namespace ShiftSoftware.UnifiedAttestation.Functions.Middlewares
 
                 Enum.TryParse(platformHeader,ignoreCase: true, out platform);
 
-                var validToken = await attestationService.VerifyTokenAsync(verificationToken, platform, withReplayProtection);
+                var validToken = await attestationService.VerifyTokenAsync(verificationToken, platform, withReplayProtection, nonceHeader, hmsApi);
 
                 if (!validToken)
                 {

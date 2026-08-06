@@ -1,10 +1,20 @@
-﻿namespace ShiftSoftware.UnifiedAttestation.Models.HMS
+namespace ShiftSoftware.UnifiedAttestation.Models.HMS
 {
     /// <summary>
     /// Represents configuration options for Huawei Mobile Services User Detect integration.
     /// </summary>
     public class HMSUserDetectOptions
     {
+        /// <summary>
+        /// Gets or sets a value indicating whether UserDetect verification is enabled. Defaults to true.
+        /// </summary>
+        /// <remarks>
+        /// UserDetect is the default HMS API for a Huawei request when the caller does not select one, which is what
+        /// existing production clients rely on. Leave it enabled unless you have fully migrated every Huawei client to
+        /// SysIntegrity.
+        /// </remarks>
+        public bool Enabled { get; set; } = true;
+
         /// <summary>
         /// Gets or sets the HMS client identifier used to authenticate API requests.
         /// </summary>
@@ -30,10 +40,5 @@
         /// Obtain this value from AppGallery Connect
         /// </remarks>
         public string AppId { get; set; } = default!;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the HMS User Detect integration is enabled.
-        /// </summary>
-        public bool Enabled { get; set; } = true;
     }
 }

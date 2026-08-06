@@ -34,14 +34,10 @@
         /// </remarks>
         public string ServiceAccountKeyVaultCertificate { get; set; } = default!;
 
-
         /// <summary>
-        /// Gets or sets the Azure Key Vault URI where the certificate for Firebase app check service account authentication is stored.
+        /// Gets or sets the Azure Key Vault URI that <see cref="ServiceAccountKeyVaultCertificate"/> is read from.
+        /// Required when Firebase App Check is enabled.
         /// </summary>
-        /// <remarks>
-        /// The certificate should be in PKCS#12 format and contain the private key for the Firebase service account.
-        /// This provides a secure alternative to storing service account credentials directly in configuration.
-        /// </remarks>
         public string KeyVaultURI { get; set; } = default!;
 
         /// <summary>

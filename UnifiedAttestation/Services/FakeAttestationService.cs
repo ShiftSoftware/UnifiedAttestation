@@ -12,7 +12,7 @@ namespace ShiftSoftware.UnifiedAttestation.Services
         {
             this.logger = logger;
         }
-        public ValueTask<bool> VerifyTokenAsync(string token, AttestationPlatform platform, bool? withReplayProtection = false)
+        public ValueTask<bool> VerifyTokenAsync(string token, AttestationPlatform platform, bool? withReplayProtection = false, string? nonce = null, HMSAttestationApi? hmsApi = null)
         {
             // Warn the developer so they don't accidentally deploy this to production!
             logger.LogWarning("⚠️ DEVELOPMENT MODE ACTIVE: Bypassing actual {Platform} attestation verification.", platform);
